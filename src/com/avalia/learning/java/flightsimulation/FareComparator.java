@@ -8,6 +8,6 @@ public class FareComparator implements Comparator<Flight> {
 	@Override
 	public int compare(Flight f1, Flight f2) {
 
-		return new Integer(f1.fare).compareTo(f2.fare);
+		return new Integer(f1.getFare()).compareTo(f2.getFare());
 	}
 }

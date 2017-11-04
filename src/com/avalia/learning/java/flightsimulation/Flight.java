@@ -1,17 +1,27 @@
 package com.avalia.learning.java.flightsimulation;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+@Entity
+@Table(name = "flights")
 public class Flight {
-	String flightNum;
-	String depLoc;
-	String arrLoc;
-	String validTill;
-	int flightTime;
-	float flightDuration;
-	int fare;
+	@Id
+	private String flightNum;
+	@Column(name = "dep_loc")
+	private String depLoc;
+	@Column(name = "arr_loc")
+	private String arrLoc;
+	@Column(name = "valid")
+	private String validTill;
+	@Column(name = "time")
+	private int flightTime;
+	@Column(name = "duration")
+	private float flightDuration;
+	@Column(name = "fare")
+	private int fare;
 
 	public Flight(String flightNum, String depLoc, String arrLoc, String validTill, int flightTime,
 			float flightDuration, int fare) {
@@ -23,6 +33,10 @@ public class Flight {
 		this.flightTime = flightTime;
 		this.flightDuration = flightDuration;
 		this.fare = fare;
+	}
+
+	public Flight() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -88,18 +102,60 @@ public class Flight {
 		this.fare = Integer.parseInt(entry[6]);
 	}
 
-	public void save() throws SQLException {
-		DbConnection db = new DbConnection();
-		PreparedStatement ps = db.con.prepareStatement("insert into flight_entry value (?,?,?,?,?,?,?)");
-		ps.setString(1, this.flightNum);
-		ps.setString(2, this.depLoc);
-		ps.setString(3, this.arrLoc);
-		ps.setString(4, this.validTill);
-		ps.setInt(5, this.flightTime);
-		ps.setFloat(6, this.flightDuration);
-		ps.setInt(7, this.fare);
-		ps.executeUpdate();
-		System.out.println("Inserted new Flight Record");
+	public String getFlightNum() {
+		return flightNum;
+	}
+
+	public void setFlightNum(String flightNum) {
+		this.flightNum = flightNum;
+	}
+
+	public String getDepLoc() {
+		return depLoc;
+	}
+
+	public void setDepLoc(String depLoc) {
+		this.depLoc = depLoc;
+	}
+
+	public String getArrLoc() {
+		return arrLoc;
+	}
+
+	public void setArrLoc(String arrLoc) {
+		this.arrLoc = arrLoc;
+	}
+
+	public String getValidTill() {
+		return validTill;
+	}
+
+	public void setValidTill(String validTill) {
+		this.validTill = validTill;
+	}
+
+	public int getFlightTime() {
+		return flightTime;
+	}
+
+	public void setFlightTime(int flightTime) {
+		this.flightTime = flightTime;
+	}
+
+	public float getFlightDuration() {
+		return flightDuration;
+	}
+
+	public void setFlightDuration(float flightDuration) {
+		this.flightDuration = flightDuration;
+	}
+
+	public int getFare() {
+		return fare;
+	}
+
+	public void setFare(int fare) {
+		this.fare = fare;
 	}
 
 	@Override
