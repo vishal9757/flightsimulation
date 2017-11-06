@@ -8,56 +8,90 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 public class Simulation {
 
 	public void read(String path) throws IOException {
 		File file = new File(path);
+		Configuration cfg = new Configuration();
+		cfg.configure("hibernate.cgf.xml");// populates the data of the
+											// configuration file
+
+		// creating session factory object
+		SessionFactory factory = cfg.buildSessionFactory();
+
 		if (file.isDirectory()) {
 			File[] files = file.listFiles();
 			for (File f : files) {
-				extract(f.getPath());
+				extract(f.getPath(), factory);
 			}
 		} else {
-			extract(path);
+			extract(path, factory);
 		}
 	}
 
 	public List<Flight> searchDB(String dep, String arr, String pref) throws SQLException {
 
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("FlightSimulation");
-		EntityManager entitymanager = emf.createEntityManager();
-		TypedQuery<Flight> querry = entitymanager
-				.createQuery("SELECT f FROM Flight f WHERE f.depLoc= ?dep AND f.arrLoc= ?arr", Flight.class);
-		querry.setParameter("dep", dep);
-		querry.setParameter("arr", arr);
-		List<Flight> flights = querry.getResultList();
+		Configuration cfg = new Configuration();
+		cfg.configure("hibernate.cgf.xml");// populates the data of the
+											// configuration file
+
+		// creating session factory object
+		SessionFactory factory = cfg.buildSessionFactory();
+		String hql = "select f from Flight f where arrLoc='" + arr + "'and depLoc='" + dep + "'";
+		Session session = factory.openSession();
+		Query query = session.createQuery(hql);
+
+		List<Flight> flights = query.list();
 		sort(flights, pref);
 		return flights;
 	}
 
-	private void extract(String path) throws IOException {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("FlightSimulation");
-		EntityManager entitymanager = emf.createEntityManager();
-		entitymanager.getTransaction().begin();
+	private void extract(String path, SessionFactory factory) throws IOException {
+
+		// creating session object
+		Session session = factory.openSession();
+
+		// creating transaction object
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		String line = br.readLine();
 		line = br.readLine();
 		while (line != null) {
+			Transaction t = session.beginTransaction();
 			if (!line.isEmpty()) {
-				entitymanager.persist(new Flight(line));
+				session.persist(new Flight(line));// persisting the object
 			}
 			line = br.readLine();
+			t.commit();// transaction is committed
 		}
-		entitymanager.getTransaction().commit();
-		entitymanager.close();
-		emf.close();
+		session.close();
 		br.close();
 	}
+
+	// private void extract(String path) throws IOException {
+	// EntityManagerFactory emf =
+	// Persistence.createEntityManagerFactory("FlightSimulation");
+	// EntityManager entitymanager = emf.createEntityManager();
+	// entitymanager.getTransaction().begin();
+	// BufferedReader br = new BufferedReader(new FileReader(path));
+	// String line = br.readLine();
+	// line = br.readLine();
+	// while (line != null) {
+	// if (!line.isEmpty()) {
+	// entitymanager.persist(new Flight(line));
+	// }
+	// line = br.readLine();
+	// }
+	// entitymanager.getTransaction().commit();
+	// entitymanager.close();
+	// emf.close();
+	// br.close();
+	// }
 
 	public static void print(List<Flight> flight) {
 		for (Flight x : flight) {
