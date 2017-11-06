@@ -73,26 +73,6 @@ public class Simulation {
 		br.close();
 	}
 
-	// private void extract(String path) throws IOException {
-	// EntityManagerFactory emf =
-	// Persistence.createEntityManagerFactory("FlightSimulation");
-	// EntityManager entitymanager = emf.createEntityManager();
-	// entitymanager.getTransaction().begin();
-	// BufferedReader br = new BufferedReader(new FileReader(path));
-	// String line = br.readLine();
-	// line = br.readLine();
-	// while (line != null) {
-	// if (!line.isEmpty()) {
-	// entitymanager.persist(new Flight(line));
-	// }
-	// line = br.readLine();
-	// }
-	// entitymanager.getTransaction().commit();
-	// entitymanager.close();
-	// emf.close();
-	// br.close();
-	// }
-
 	public static void print(List<Flight> flight) {
 		for (Flight x : flight) {
 			System.out.println(x);
