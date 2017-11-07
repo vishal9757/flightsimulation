@@ -4,7 +4,7 @@
  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-	<class name="com.avalia.learning.java.flightsimulation.Flight" table="flight">
+	<class name="com.avalia.learning.java.flightsimulation.Flight" table="flights">
 		<id name="FlightNum">
 			<generator class="assigned"></generator>
 		</id>
